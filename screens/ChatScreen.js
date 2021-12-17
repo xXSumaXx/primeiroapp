@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component } from "react";
 import {StatusBar} from 'expo-status-bar';
 import { StyleSheet, View, Text, Image} from "react-native";
 import {FontAwesome5} from '@expo/vector-icons';
+import { WebView } from 'react-native-webview';
+
 
 export default function ChatScreen({route}){
     const {id} = route.params;
@@ -17,28 +19,32 @@ export default function ChatScreen({route}){
         }
         getData();
     },[]);
-
+    
     return(
         <View style={styles.container}>
             <StatusBar style='auto'/>
             <View style={styles.titulo}>
-                <Text style={styles.titulo1}>{email.tittle}</Text>
-                <View>
+                <View style={styles.titulo1}>
+                    <Text style={styles.titulo1}>{email.tittle}</Text>
+                </View>
+                <View style={styles.titulo2}>
                     <FontAwesome5 style={email.star? styles.favorito1 : styles.favorito} name="star" size={16}/>
                 </View>
             </View>
             <View style={styles.info}>
                 <Image style={styles.image} source={{uri: email.picture}}/>
                 <View style={styles.info1}>
-                    <Text style={styles.titulo1}>{email.from}, {email.time}</Text>
-                    <Text style={styles.titulo1}>{email.to}</Text>
+                    <Text style={styles.info1}>{email.from}, {email.time}</Text>
+                    <Text style={styles.info1}>{email.to}</Text>
                 </View>
             </View>
-            <View style={styles.corpo}>
-                <Text style={styles.corpo1}>{email.body}</Text>
-            </View>
+            <WebView 
+                style={styles.corpo}
+                originWhitelist={['*']}
+                source={{ html: email.body}}
+            />
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -48,12 +54,16 @@ const styles = StyleSheet.create({
     },
     titulo:{
         flexDirection: 'row',
-        width:'100%',
         height:150,
         backgroundColor: '#4F4F4F',
     },
     titulo1:{
+        flex: 1,
         fontSize:27,
+        padding: 5,
+    },
+    titulo2:{
+        justifyContent:'center',
         padding: 5,
     },
     info:{
@@ -61,6 +71,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height:100,
         backgroundColor: 'gray',
+    },
+    info1:{
+        fontSize:27,
+        padding: 5,
     },
     corpo:{
         flex:1,
